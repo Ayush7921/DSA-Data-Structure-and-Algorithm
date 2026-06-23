@@ -39,11 +39,7 @@ public:
             newtemp=newtemp->next;
         }
 
-        Node* t = ans;
-        ans=ans->next;
-        t->next = NULL;
-        delete t;
-        return ans;
+        return ans->next;
 
 
 
