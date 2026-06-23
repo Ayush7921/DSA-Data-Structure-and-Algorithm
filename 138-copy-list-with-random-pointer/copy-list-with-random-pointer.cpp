@@ -23,21 +23,14 @@ public:
         Node * ans = dummy;
 
         while(temp!=NULL){
-            Node * newnode = new Node(temp->val);
 
+            Node * newnode = new Node(temp->val);
+            mp[temp]=newnode;
             dummy->next = newnode;
             dummy = newnode;
             temp=temp->next;
         }
         Node * newtemp=ans->next;
-
-        temp=head;
-        while(temp!=NULL){
-           mp[temp]=newtemp;
-           temp= temp->next;
-           newtemp=newtemp->next;
-        }
-
         temp=head;
         newtemp=ans->next;
         while(temp!=NULL){
@@ -46,7 +39,12 @@ public:
             newtemp=newtemp->next;
         }
 
-        return ans->next;
+        Node* t = ans;
+        ans=ans->next;
+        t->next = NULL;
+        delete t;
+        return ans;
+
 
 
     }
