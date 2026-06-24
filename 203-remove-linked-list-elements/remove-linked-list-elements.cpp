@@ -21,14 +21,15 @@ public:
 
         while(curr!=NULL ){
               
-            if(curr->val == val){
+            while(curr!= NULL && curr->val == val){
                 prev->next = curr->next;
+                curr=curr->next;
             }
-            else{
-                prev=curr;
-            }
-            curr= curr->next;
 
+            prev=curr;
+            if(curr!=NULL){
+            curr= curr->next; }
+            
 
         }
         return dummy ->next;
