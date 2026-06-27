@@ -34,8 +34,8 @@ public:
       }
       long long result=0;
       for (int i = 0; i<n ; i++){
-        int left = lmn[i]-i;
-        int right = i - rmn[i];
+        int left = i - lmn[i];
+        int right = rmn[i]- i;
 
         result = (result + 1LL * left * right * arr[i]) % mod;
       }
