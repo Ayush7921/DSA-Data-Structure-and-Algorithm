@@ -1,31 +1,41 @@
 class Solution {
 public:
-    int dooperation(int a , int b , string s){
-        if(s=="+"){ return a+b;}
-        else if(s=="-"){ return a-b;}
-        else if(s=="*"){ return a*b;}
-        else { return a/b;}
-    }
     int evalRPN(vector<string>& tokens) {
-        stack<int> s;
+        stack<int> st;
 
-        for (int i =0 ; i< tokens.size() ; i++){
-            if( tokens[i]=="+" || tokens[i]=="-" || tokens[i]=="*" || tokens[i]=="/" ){
-                int op1 = s.top();
-                s.pop();
-                int op2 = s.top();
-                s.pop();
-
-                int ans = dooperation(op2,op1,tokens[i]);
-                s.push(ans);
-
+        for(auto c : tokens){
+            if(c == "*"){
+                int b = st.top();
+                st.pop();
+                int a = st.top();
+                st.pop();
+                st.push(a * b);
             }
-            else{
-                int num = stoi(tokens[i]);
-                s.push(num);
+            else if(c == "/"){
+                int b = st.top();
+                st.pop();
+                int a = st.top();
+                st.pop();
+                st.push(a / b);
             }
+            else if(c == "+"){
+                int b = st.top();
+                st.pop();
+                int a = st.top();
+                st.pop();
+                st.push(a + b);
+            }
+            else if(c == "-"){
+                int b = st.top();
+                st.pop();
+                int a = st.top();
+                st.pop();
+                st.push(a - b);
+            }
+            else
+                st.push(stoi(c));
         }
-        int result = s.top();
-        return result ;
+
+        return st.top();
     }
 };
