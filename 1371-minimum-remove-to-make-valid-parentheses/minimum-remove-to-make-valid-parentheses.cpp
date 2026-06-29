@@ -1,37 +1,34 @@
 class Solution {
 public:
     string minRemoveToMakeValid(string s) {
-        
-        stack<int> st;
-        unordered_set<int> set;
+        vector<int> open;
+        vector<int> remove;
+        int n = s.size();
 
-        for (int i =0 ; i< s.size() ; i++){
-            if(s[i]=='('){
-                st.push(i);
-            }
-            else if(s[i]==')'){
-                if(st.empty()){
-                    set.insert(i);
+        for(int i = 0; i < n; i++) {
+            if(s[i] == '(') {
+                open.push_back(i);
+            } 
+            else if(s[i] == ')') {
+                if(!open.empty()) {
+                    open.pop_back();  
+                } else {
+                    remove.push_back(i);
                 }
-                else{
-                    st.pop();
-                }
             }
         }
-
-        while(!st.empty()){
-            set.insert(st.top()) ;
-            st.pop();
+        for(int x : open) {
+            s[x]='*';
+        }
+        for(int x : remove) {
+            s[x] = '*';
         }
 
-        string ans;
-
-        for(int i =0 ; i<s.size();i++){
-            if(set.find(i) == set.end()){
-                ans.push_back(s[i]);
-            }
+        string ans = "";
+        for(char c : s) {
+            if(c != '*') ans += c;
         }
 
-        return ans ;
+        return ans;
     }
 };
