@@ -1,27 +1,28 @@
 class Solution {
 public:
-    int dp[501][501];
 
-    int solve(string &s , int i , int j){
-        if(i>=j){
-            return 0;
-        }
-
-        if(dp[i][j] != -1 ){
-            return dp[i][j];
-        }
-
-        if(s[i]==s[j]){
-            return dp[i][j]=solve(s,i+1, j-1);
-        }
-
-        return dp[i][j]= min(1 + solve(s,i+1,j) , 1+ solve(s,i,j-1));
-
-    }
     int minInsertions(string s) {
 
-        memset(dp,-1,sizeof(dp));
-        return solve(s, 0 , s.size()-1);
+        int n = s.size();
+        vector<vector<int>> dp(n, vector<int> (n));
+
+        for(int L = 1 ; L <= n ; L++){
+
+            for(int i = 0 ; i+L-1<n ; i++){
+                int j = i+L-1;
+
+                if(i==j){
+                    dp[i][i]= 0;
+                }
+                else if(i+1==j){
+                    dp[i][j] = (s[i]==s[j]) ? 0:1 ;
+                }else{
+                    dp[i][j] = (s[i]==s[j])? dp[i+1][j-1] : 1 + min(dp[i+1][j],dp[i][j-1]);
+                }
+            }
+        }
+
+        return dp[0][n-1] ;
         
     }
 };
