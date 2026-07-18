@@ -11,11 +11,19 @@ public:
 
             if(mid%2==1){
                 mid--;
+                if(nums[mid]==nums[mid+1]){
+                s = mid+2;
+                }else{
+                e=mid;
+                }
+
             }
+            else{
             if(nums[mid]==nums[mid+1]){
                 s = mid+2;
             }else{
                 e=mid;
+            }
             }
 
         }
