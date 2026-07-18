@@ -14,19 +14,16 @@ public:
 
             if(jump>0 && mp.contains(currpos+jump)){
                 int nextidx =mp[stones[i]+jump];
-                a = a|| solve(stones , mp , nextidx , jump , dp);
+                if(solve(stones , mp , nextidx , jump , dp)){
+                    return dp[i][k] =1 ;
+                };
             }
         }
-        return dp[k][i] = (a==true)? 1 : 0 ;
+        return dp[k][i] = 0;
 
     }
     bool canCross(vector<int>& stones) {
         int n = stones.size();
-
-        if(n==2){
-            return (stones[1]==1);
-        }
-
         if(stones[1]!=1){
             return (stones[1]==1);
         }
@@ -35,8 +32,6 @@ public:
         for(int i = 0 ; i< n;i++){
             mp[stones[i]]=i;
         }
-
-        int k = *max_element(stones.begin(),stones.end());
         vector<vector<int>> dp(n+1,vector<int>(n,-1));
         return solve(stones , mp , 1,1,dp);
         
