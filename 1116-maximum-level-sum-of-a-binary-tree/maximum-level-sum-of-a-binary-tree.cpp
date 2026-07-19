@@ -12,41 +12,39 @@
 class Solution {
 public:
     int maxLevelSum(TreeNode* root) {
-
-        int level = 1 ;
-        int sum = INT_MIN ;
-        int l =0 ;
-
-        queue<TreeNode *> q ;
+            //Time: O(n) (each node is visited exactly once)Space: O(w), where w is the maximum width of the tree. Worst case: O(n)
+        queue<TreeNode*> q;
         q.push(root);
 
-        while(!q.empty()){
-;
-            int s = 0 ;
-            int n = q.size();
+        int level = 1;
+        int answer = 1;
+        int maxSum = INT_MIN;
 
-            for(int i = 0 ; i<n ; i++){
-                TreeNode * temp = q.front();
+        while (!q.empty()) {
+            int size = q.size();
+            int levelSum = 0;
+
+            for (int i = 0; i < size; i++) {
+                TreeNode* curr = q.front();
                 q.pop();
-                s+=(temp->val);
 
-                if(temp->left){
-                    q.push(temp->left);
-                }
+                levelSum += curr->val;
 
-                if(temp->right){
-                    q.push(temp->right);
-                }
+                if (curr->left)
+                    q.push(curr->left);
+
+                if (curr->right)
+                    q.push(curr->right);
             }
-            l+=1;
-            if(s>sum){
-                sum=s;
-                level = l;
+
+            if (levelSum > maxSum) {
+                maxSum = levelSum;
+                answer = level;
             }
-            
+
+            level++;
         }
 
-        return level;
-        
+        return answer;
     }
 };
