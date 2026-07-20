@@ -1,31 +1,56 @@
+#pragma GCC optimize("Ofast,unroll-loops,fast-math")
+#pragma GCC target("avx,avx2,fma,sse4,popcnt,lzcnt,bmi,bmi2")
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ull = unsigned long long;
+using ld = long double;
+
+static constexpr size_t mxal = alignof(max_align_t);
+alignas(mxal) static unsigned char buf[256 * 1024 * 1024];
+static size_t pos = 0;
+
+void* operator new(size_t sz) {
+    size_t pad = (mxal - (pos % mxal)) % mxal;
+    pos += pad + sz;
+    return (void*)(&buf[pos - sz]);
+}
+
+void* operator new[](size_t sz) { return operator new(sz); }
+
+void operator delete(void*) noexcept {}
+void operator delete[](void*) noexcept {}
+void operator delete(void*, size_t) noexcept {}
+void operator delete[](void*, size_t) noexcept {}
+
 class Solution {
-public:
-    bool searchMatrix(vector<vector<int>>& m, int target) {
-        int r = m.size();
-        int c = m[0].size();
-
-        int n = r*c;
-
-        int i = 0 ;
-        int j = n-1;
-
-        while(i<=j){
-            int mid = i + (j-i)/2 ;
-
-            int cr = mid/c;
-            int cc= mid % c;
-
-            int ele = m[cr][cc] ;
-
-            if(ele ==target){
-                return true ;
-            }else if(ele < target){
-                i=mid+1;
-            }else{
-                j=mid-1;
-            }
+private:
+    bool bs(vector<int>&mat,int col,int target){
+        int low=0;
+        int high=col-1;
+        while(low<=high){
+            int mid=(low+high)/2;
+            if(mat[mid]==target){return true;}
+            else if(mat[mid]>target){high=mid-1;}
+            else{low=mid+1;}
         }
-
-        return false ;
+        return false;
+    }
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int r=matrix.size();
+        int c=matrix[0].size();
+        int cr=0;
+        while(cr<r){
+            if(matrix[cr][0]<=target && matrix[cr][c-1]>=target){
+                if(bs(matrix[cr],c,target)==true){return true;}
+                else{return false;}
+            }
+            else if(target>matrix[cr][c-1]){cr++;}
+            else{return false;}
+        }
+        return false;
     }
 };
