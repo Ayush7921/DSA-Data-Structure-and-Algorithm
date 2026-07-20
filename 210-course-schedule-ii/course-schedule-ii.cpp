@@ -1,5 +1,25 @@
 class Solution {
 public:
+    bool dfs(unordered_map<int , vector<int>> &adj,vector<bool> & vis , vector<bool> &inpath ,vector<int> &ans ,int u ){
+        vis[u]=true;
+        inpath[u]=true;;
+
+        for(int &v : adj[u]){
+            if(!vis[v]){
+                if(dfs(adj,vis,inpath,ans,v)){
+                    return true;
+                }
+            }else if(inpath[v]){
+                return true ;
+            }
+        }
+        ans.push_back(u);
+        inpath[u]=false;
+
+        return false;
+    }
+
+
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         
         int V = numCourses ;
@@ -17,35 +37,22 @@ public:
         }
         
 
-        queue<int> q ;
-        for(int i=0 ; i<V ; i++ ){
-            if(indegree[i]==0){
-                q.push(i);
-            }
-        }
-        
-        int count = 0 ;
+        vector<bool> vis(V,false);
+        vector<bool> inpath(V,false);
         vector<int> ans ;
 
-        while(!q.empty()){
-            int u = q.front();
-            q.pop();
-            count++;
-            ans.push_back(u);
-
-            for(int &v : adj[u]){
-                indegree[v]--;
-                if(indegree[v]==0){
-                    q.push(v);
-                }
+        for(int u = 0 ; u< V ; u++)
+        {
+            if(!vis[u] && dfs(adj , vis,inpath,ans ,u)){
+                return {};
             }
         }
 
-        if(count==V){
-            return ans ;
-        }else{
-            return {};
-        }
+        reverse( ans.begin() ,  ans.end()) ;
+        return ans ;
+
+        
+       
         
     }
 };
