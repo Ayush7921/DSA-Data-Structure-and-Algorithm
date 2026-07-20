@@ -1,5 +1,25 @@
 class Solution {
 public:
+    bool iscycle( unordered_map<int,vector<int>> &adj , vector<int>& vis ,vector<int>& inpath , int u  ){
+        vis[u]=true;
+        inpath[u]=true;
+
+        for(int &v : adj[u] ){
+
+            if(!vis[v]){
+                if(iscycle(adj , vis , inpath , v)){
+                    return true ;
+                }
+                
+            }else if(inpath[v]){
+                return true ;
+            }
+        }
+
+        inpath[u]=false;
+
+        return false ;
+    }
     bool canFinish(int numCourses, vector<vector<int>>& prequisites) {
         int V = numCourses ;
         int n =prequisites.size();
@@ -10,38 +30,16 @@ public:
             adj[prequisites[i][1]].push_back(prequisites[i][0]);
         }
 
-        vector<int> indegree(V,0);
+        vector<int> vis(V,false);
+        vector<int> inpath(V,false);
 
-        for(int i = 0 ; i< n ; i++ ){
-            indegree[prequisites[i][0]]++;
-        }
-
-        queue<int> q ; 
         for(int i = 0 ; i< V ; i++){
-            if(indegree[i]==0){
-                q.push(i);
+            if(!vis[i] && iscycle(adj , vis , inpath , i)){
+                return false ;
             }
         }
 
-        int count = 0;
-        while(!q.empty()){
-            int u = q.front();
-            q.pop();
+        return true ;
 
-            count++;
-
-            for(int &v : adj[u]){
-
-                indegree[v]--;
-
-                if(indegree[v]==0){
-                    q.push(v);
-                }
-
-                
-            }
-        }
-
-        return (V==count);
     }
 };
