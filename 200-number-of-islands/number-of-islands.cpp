@@ -1,38 +1,34 @@
 class Solution {
 public:
-    void bfs(vector<vector<char>>& grid , vector<vector<bool>>& vis,int row , int col){
+    void bfs(vector<vector<char>>& grid , int row , int col){
         queue<pair<int , int>> q ;
+
         q.push({row,col});
-        vis[row][col]=true;
+        grid[row][col]='0';
+
         int n = grid.size();
         int m = grid[0].size();
+        
+        int delrow[] = {-1, 1, 0, 0};
+        int delcol[] = {0, 0, -1, 1};
 
         while(!q.empty()){
             int r = q.front().first;
             int c = q.front().second;
             q.pop();
 
-            for(int i = -1 ; i<=1 ; i++){          
-                int newrow = r;
-                int newcol = c +i;
+            for(int i = 0 ; i<4 ; i++){          
+                int newrow = r + delrow[i];
+                int newcol = c + delcol[i];
 
-                if((newcol>=0 && newcol<m) && grid[newrow][newcol]=='1' && !vis[newrow][newcol]){
+                if((newcol>=0 && newcol<m) && (newrow>=0 && newrow<n) && (grid[newrow][newcol]=='1') ){
                     q.push({newrow,newcol});
-                    vis[newrow][newcol]=true;
+                    grid[newrow][newcol]=0;
                 }
 
             }
 
-            for(int i = -1 ; i<=1 ; i++){          
-                int newrow = r+i;
-                int newcol = c ;
 
-                if((newrow>=0 && newrow<n) && grid[newrow][newcol]=='1' && !vis[newrow][newcol]){
-                    q.push({newrow,newcol});
-                    vis[newrow][newcol]=true;
-                }
-
-            }
         }
 
     }
@@ -44,14 +40,11 @@ public:
         int c = grid[0].size();
         int count = 0;
 
-        vector<vector<bool>> vis(r,vector<bool>(c,false));
-
         for(int row = 0 ; row < r ; row++){
             for(int col = 0 ; col < c ; col++ ){
-                if(!vis[row][col] && grid[row][col]=='1'){
-                    bfs(grid,vis,row,col);
+                if(grid[row][col]=='1'){
+                    bfs(grid,row,col);
                     count++;
-
                 }
             }
         }
