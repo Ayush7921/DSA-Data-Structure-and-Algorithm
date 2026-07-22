@@ -2,95 +2,39 @@ class Solution {
 public:
     int maxActiveSectionsAfterTrade(string s) {
 
-        int i = 0 ;
-        int n = s.size();
-        int j = s.size()-1;
-        
-        int count= 0 ;
-        while(i<n){
+        int count1 =0 ;
+        for(int i = 0 ; i< s.size() ; i++){
             if(s[i]=='1'){
-                i++;
-                count++;
-            }else{
-                break;
+                count1++;
             }
         }
 
-        while(j>=0){
-            if(s[j]=='1'){
-                j--;
-                count++;
-            }else{
-                break;
-            }
-        }
+        vector<int> zerotrack;
 
-        if(i>=j){
-            if(i==j) return (s[i]==1)?count+1 : count ;
-
-            return n ;
-        }
-
-        int c1=0;
-
-        for(int k= i ; k<= j ; k++){
-            if(s[k]=='1'){
-                c1++;
-            }
-        }
-
-        if(c1==0){
-            return count;
-        }
-
-        if(c1==1){
-            return n;
-        }
-
-        
-
-        int pc = 0;
-        int fc=0;
-        bool flag = false ;
-        int c= 0;
-
-        while(i<=j){
-
+        for(int i = 0 ; i< s.size();){
             if(s[i]=='0'){
-                if(flag){
-                    fc++;
-                }else{
-                    pc++;
+                int count = 0 ;
+                while(s[i]=='0'){
+                    i++;
+                    count++;
                 }
-
-                i++;
-
+                zerotrack.push_back(count);
             }else{
-
-                if(flag){
-                    c=max(c,fc+pc+c1);
-                    i++;
-                    while(s[i]=='1'){i++;}
-                    pc=fc;
-                    fc=0;
-                }
-                else{
-                    flag = true;
-                    i++;
-                    while(s[i]=='1'){i++;}
-
-                }
+                i++;
             }
-
-        }
-    
-        
-
-        if(flag){
-            c = max(c , fc+pc+c1);
         }
 
-        return count+c;
+        int n = zerotrack.size();
+
+        if(n<=1){
+            return count1 ;
+        }
         
+        int maxzero=0;
+        for(int i =0 ; i< n-1 ; i++){
+            maxzero=max(maxzero , zerotrack[i]+zerotrack[i+1]);
+        }
+
+        return count1+maxzero;
     }
 };
