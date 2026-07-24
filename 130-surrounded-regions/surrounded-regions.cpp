@@ -3,73 +3,76 @@ public:
     int tr;
     int tc;
 
-    void bfs(vector<vector<char>>& board, int startRow, int startCol, vector<vector<bool>>& vis) {
-        
-        // Declare these locally! They will automatically destroy themselves when BFS finishes.
-        queue<pair<int, int>> q;
-        stack<pair<int, int>> st;
-        bool touchesBoundary = false;
+    void dfs(vector<vector<char>>& board, int i, int j) {
 
-        q.push({startRow, startCol});
-        st.push({startRow, startCol});
-        vis[startRow][startCol] = true;
+        board[i][j]='S';
 
-        // Arrays are much faster than vectors, and should be declared outside the while loop
-        int deltarow[] = {-1, 0, 1, 0};
-        int deltacol[] = {0, 1, 0, -1};
 
-        while (!q.empty()) {
-            int r = q.front().first;
-            int c = q.front().second;
-            q.pop();
+        static int delrow[] ={-1,0,1,0};
+        static int delcol[] = {0,1,0,-1};
 
-            for (int i = 0; i < 4; i++) {
-                int nrow = r + deltarow[i];
-                int ncol = c + deltacol[i];
+        for(int k = 0 ; k< 4 ; k++){
+            int nr = i + delrow[k];
+            int nc= j + delcol[k];
 
-                if (nrow >= 0 && nrow < tr && ncol >= 0 && ncol < tc && !vis[nrow][ncol] && board[nrow][ncol] == 'O') {
-                    
-                    if (nrow == 0 || nrow == tr - 1 || ncol == 0 || ncol == tc - 1) {
-                        touchesBoundary = true;
-                    }
-
-                    vis[nrow][ncol] = true; // Fixed typo
-                    q.push({nrow, ncol});
-                    st.push({nrow, ncol});
-                }
+            if((nr>=0 && nr<tr) && (nc>=0 && nc<tc) && board[nr][nc]=='O'){
+                dfs(board,nr,nc);
             }
+
         }
 
-        // If it touched the boundary, we just exit. 
-        // C++ automatically wipes 'st' from memory here!
-        if (touchesBoundary) {
-            return;
-        }
-
-        // Otherwise, flip everything in the stack to 'X'
-        while (!st.empty()) {
-            int r = st.top().first;
-            int c = st.top().second;
-            st.pop();
-            board[r][c] = 'X';
-        }
+        
+  
     }
 
     void solve(vector<vector<char>>& board) {
-        if (board.empty()) return; // Always good practice to protect against empty grids
+        if (board.empty()) return; 
 
         tr = board.size();
         tc = board[0].size();
 
-        vector<vector<bool>> vis(tr, vector<bool>(tc, false));
+        int top = 0 ;
+        int bottom = tr-1;
+        int left = 0 ;
+        int right = tc-1;
 
-        for (int i = 1; i < tr - 1; i++) {
-            for (int j = 1; j < tc - 1; j++) {
-                if (!vis[i][j] && board[i][j] == 'O') {
-                    // Start BFS, passing only the board, coordinates, and visited array
-                    bfs(board, i, j, vis);
+        for(int i = left ; i<=right ; i++){
+            if(board[top][i]=='O'){
+                dfs(board,top,i);
+            }
+        }
+
+        for(int i = top ; i<=bottom ; i++){
+            if(board[i][right]=='O'){
+                dfs(board,i,right);
+            }
+        }
+
+        for(int i = right ; i>=left ; i--){
+            if(board[bottom][i]=='O'){
+                dfs(board,bottom,i);
+            }
+        }
+
+        for(int i = bottom ; i>=top ; i--){
+            if(board[i][left]=='O'){
+                dfs(board,i,left);
+            }
+        }
+
+
+        for(int i =0 ; i< tr ; i++){
+            for(int j = 0 ; j< tc ; j++){
+                if(board[i][j]=='S'){
+                    board[i][j]='O';
+                }else if (board[i][j]=='O'){
+                    board[i][j]='X';
                 }
             }
         }
+
+
+
+        
     }
 };
