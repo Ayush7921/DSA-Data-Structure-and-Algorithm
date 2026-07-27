@@ -33,13 +33,13 @@ public:
         if(x<n-1){
             return -1;
         }
-        parent.resize(n);
+        parent.assign(n,0);
 
         for(int i = 0 ; i < n ; i++){
             parent[i]=i;
         }
 
-        rank.resize(n,0);
+        rank.assign(n,0);
         
         
         for(auto &e: connections){
