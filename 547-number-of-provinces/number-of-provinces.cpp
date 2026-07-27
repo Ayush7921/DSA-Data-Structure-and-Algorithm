@@ -1,37 +1,61 @@
 class Solution {
 public:
 
-    int findCircleNum(vector<vector<int>>& isConnected) {
-
-        int v = isConnected.size();
-        vector<bool> vis(v+1, false);
-
-        int provisions = 0 ;
-
-        queue<int > q ;
-        for(int i = 1 ; i<= v ; i++){
-            if(vis[i]){
-                continue;
-            }
-
-            vis[i]=true ;
-            q.push(i);
-            provisions++;
-
-            while(!q.empty()){
-                int u = q.front();
-                q.pop();
-
-                for(int j = 1 ; j<=v; j++ ){
-                    if(!vis[j] && isConnected[u-1][j-1]==1){
-                        vis[j]=true ;
-                        q.push(j);
-                    }
-                }
-            } 
+    vector<int> parent;
+    vector<int> rank ;
+    
+    int find(int i){
+        if(i==parent[i]){
+            return i ;
         }
 
-        return provisions;
+        return parent[i]=find(parent[i]);
+
+    }
+
+    void Union(int i , int j){
+
+        int x = find(i);
+        int y = find(j);
+
+        if(x==y){
+            return ;
+        }
+
+        if(rank[x]>rank[y]){
+            parent[y]=x;
+        }else if(rank[x]<rank[y]){
+            parent[x]=y;
+        }else {
+            parent[y]=x;
+            rank[x]++;
+        }
+    }
+    int findCircleNum(vector<vector<int>>& isc) {
         
+        int n = isc.size();
+        parent.resize(n);
+        for(int i = 0 ; i< n; i++){
+            parent[i]=i;
+        }
+
+        rank.resize(n,0);
+
+        for(int i = 0 ; i< n ; i++){
+            for(int j = i+1; j<n ; j++){
+                if(isc[i][j]==1){
+                    Union(i,j);
+                }
+            }
+        }
+
+        int distinct = 0;
+        for(int i = 0; i < n; i++) {
+            if(parent[i] == i) {
+                distinct++;
+            }
+        }
+
+        return distinct;
     }
 };
