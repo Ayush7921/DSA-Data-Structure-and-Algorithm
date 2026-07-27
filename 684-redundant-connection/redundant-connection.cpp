@@ -28,13 +28,13 @@ public:
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
 
         int n = edges.size();
-        parent.resize(n+1);
+        parent.assign(n+1,0);
 
         for(int i = 0 ; i <= n ; i++){
             parent[i]=i;
         }
 
-        rank.resize(n+1,0);
+        rank.assign(n+1,0);
 
         for(auto &e : edges){
             int u = find(e[0]);
