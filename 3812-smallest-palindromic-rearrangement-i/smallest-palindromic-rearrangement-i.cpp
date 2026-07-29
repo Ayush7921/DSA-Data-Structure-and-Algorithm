@@ -2,33 +2,27 @@ class Solution {
 public:
     string smallestPalindrome(string s) {
 
-        vector<int> present(26, 0);
-
-        for(char c : s)
-            present[c - 'a']++;
-
+        int present[26] = {0};
         int n = s.size();
-        string str(n, ' ');
 
-        int i = 0;
-        int j = n - 1;
+        for(int i = 0; i < n/2; i++){
+            present[s[i] - 'a']++;
+        }
 
-        for(int k = 0; k < 26; k++)
+        int idx = 0;
+
+        for(int i = 0; i < 26; i++){
+            while(present[i] > 0){
+                s[idx++] = (i + 'a');
+                present[i]--;
+            }
+        }
+
+        for(int i = 0; i < n/2; i++)
         {
-            while (present[k] >= 2) {
-                str[i++] = char(k + 'a');
-                str[j--] = char(k + 'a');
-                present[k] -= 2;
-            }
+            s[n - i - 1] = s[i];
         }
 
-        for (int k = 0; k < 26; k++) {
-            if (present[k] == 1) {
-                str[i] = char(k + 'a');   // here i == j
-                break;
-            }
-        }
-
-        return str;
+        return s;
     }
 };
