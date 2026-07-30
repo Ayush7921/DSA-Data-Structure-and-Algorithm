@@ -21,7 +21,7 @@ public:
 
         if(rank[x]>rank[y]){
             parent[y]=x;
-        }else if (rank[x]>rank[y]){
+        }else if (rank[x]<rank[y]){
             parent[x]=y;
         }else{
             parent[y]=x;
@@ -47,7 +47,7 @@ public:
 
         rank.assign(n ,0);
 
-        unordered_map<int , int > mp ;
+        vector<bool> mp(n,false) ;
 
         for(auto & c : stones ){
             int r = c[0];
@@ -55,13 +55,13 @@ public:
 
             Union(r,col);
 
-            mp[r]=1;
-            mp[col]=1;
+            mp[r]=true;
+            mp[col]=true;
         }
 
         int c = 0 ;
-        for(auto & it : mp){
-            if(parent[it.first]==it.first){
+        for(int i = 0 ; i< n; i++){
+            if(mp[i] && parent[i]==i){
                 c++;
             }
         }
