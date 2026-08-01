@@ -1,71 +1,80 @@
+#include <vector>
+#include <string>
+#include <iostream>
+
+using namespace std;
+
 class Solution {
 public:
-    vector<int> parent ;
-    vector<int> rank;
+    int parent[100005];
+    int rank[100005];
 
-    int find (int i){
-        if(i==parent[i]){
-            return i ;
+    int find(int i) {
+        if (i == parent[i]) {
+            return i;
         }
-
         return parent[i] = find(parent[i]);
     }
 
-    void Union(int i , int j ){
+    void unite(int i, int j) {
         int x = find(i);
         int y = find(j);
-
-        if(x==y){
-            return ;
-        }
-
-        if(rank[x]>rank[y]){
-            parent[y]=x;
-        }else if (rank[x]<rank[y]){
-            parent[x]=y;
-        }else{
-            parent[y]=x;
-            rank[x]++;
+        
+        if (x != y) {
+            if (rank[x] > rank[y]) {
+                parent[y] = x;
+            } else if (rank[x] < rank[y]) {
+                parent[x] = y;
+            } else {
+                parent[y] = x;
+                rank[x]++;
+            }
         }
     }
 
     string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        // 1. Fast I/O: Tells C++ not to sync with C-style I/O, resulting in massive speedups
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
 
-        unordered_map<int , vector<int>>mp ;
-
-        int n= s.size();
-        parent.assign(n,0);
-        rank.assign(n,0);
-        for(int i = 0 ; i< n ; i++){
-            parent[i]=i;
-        }
-
-        for(auto &e : pairs){
-            Union(e[0],e[1]);
-        }
+        int n = s.size();
         
-        for(int i = 0 ; i< n ; i++){
-            int x = find(i);
-
-            if(!mp.contains(x)){
-                mp[x]=vector<int>(26, 0);
-            }
-
-            mp[x][s[i] - 'a']++;
+        // Use raw arrays instead of vectors for DSU to avoid allocation overhead
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
         }
 
-        for(int i = 0 ; i< n ; i++){
-            int x = find(i);
-
-            for(int j = 0 ; j< 26 ; j++){
-                if(mp[x][j]!=0){
-                    s[i]= j+'a';
-                    mp[x][j]--;
-                    break;
-                }
-            }
+        for (const auto& e : pairs) {
+            unite(e[0], e[1]);
         }
 
-        return  s;   
+        // 2. Flat 1D Vector (Ultimate CPU Cache Locality)
+        // Instead of an unordered_map, we map [root][char] to a 1D index: (root * 26 + char)
+        // This allocates exactly one block of memory and makes lookups instantaneous.
+        vector<int> count(n * 26, 0);
+        
+        for (int i = 0; i < n; i++) {
+            count[find(i) * 26 + (s[i] - 'a')]++;
+        }
+
+        // 3. The "Pointer" Trick
+        // Remembers the smallest available character for each DSU group so we don't restart from 0
+        vector<int> pointer(n, 0);
+
+        for (int i = 0; i < n; i++) {
+            int root = find(i);
+            int base = root * 26;
+            
+            // Skip empty character counts instantly
+            while (count[base + pointer[root]] == 0) {
+                pointer[root]++;
+            }
+            
+            s[i] = pointer[root] + 'a';
+            count[base + pointer[root]]--;
+        }
+
+        return s;
     }
 };
