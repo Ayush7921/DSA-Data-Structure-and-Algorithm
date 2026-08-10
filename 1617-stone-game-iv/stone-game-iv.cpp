@@ -1,19 +1,17 @@
 class Solution {
 public:
-    bool winnerSquareGame(int n) {
-        
-        vector<int> dp(n+1,false);
+    static constexpr int MAX = 100000;
+    inline static bitset<MAX + 1> dp;
 
-        for(int i = 1 ; i<= n ; i++){
-            for(int j = 1 ; j*j <=i ; j++){
-                if(dp[i-(j*j)]==false){
-                    dp[i]=true ;
-                    break;
-                }
-            }
-
+    inline static bool init = []() {
+        for (int i = 0; i <= MAX; i++) {
+            if (dp.test(i)) continue;
+            for (int j = 1; j * j <= MAX - i; j++)
+                dp.set(i + j * j);
         }
+        
+        return false;
+    }();
 
-        return dp[n];
-    }
+    bool winnerSquareGame(int n) { return dp.test(n); }
 };
